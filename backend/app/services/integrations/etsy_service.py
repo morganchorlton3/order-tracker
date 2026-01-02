@@ -226,6 +226,8 @@ class EtsyService:
         # Extract customer information
         buyer_name = receipt.get("name", "")
         buyer_email = receipt.get("buyer_email", "")
+
+        print(f"Receipt: {receipt}")
         
         # Extract shipping address
         shipping_address = {
@@ -256,8 +258,8 @@ class EtsyService:
         currency = receipt.get("total_price", {}).get("currency_code", "USD")
         
         # Map Etsy status to our status
-        was_paid = receipt.get("was_paid", False)
-        was_shipped = receipt.get("was_shipped", False)
+        is_paid = receipt.get("is_paid", False)
+        is_shipped = receipt.get("is_shipped", False)
         is_delivered = receipt.get("is_delivered", False)
         is_cancelled = receipt.get("is_cancelled", False)
         
@@ -265,9 +267,9 @@ class EtsyService:
             status = "cancelled"
         elif is_delivered:
             status = "delivered"
-        elif was_shipped:
+        elif is_shipped:
             status = "shipped"
-        elif was_paid:
+        elif is_paid:
             status = "processing"
         else:
             status = "pending"
