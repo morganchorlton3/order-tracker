@@ -1,4 +1,8 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { signOut } from 'supertokens-auth-react/recipe/session'
+import { useSessionContext } from 'supertokens-auth-react/recipe/session'
+import { useQuery } from '@tanstack/react-query'
+import { syncUser } from '../services/api'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -6,6 +10,15 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation()
+  const navigate = useNavigate()
+  const session = useSessionContext()
+
+  // Fetch user info to get email
+  const { data: userInfo } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: syncUser,
+    enabled: !session.loading,
+  })
 
   const navItems = [
     { path: '/', label: 'Dashboard' },
@@ -13,6 +26,11 @@ export default function Layout({ children }: LayoutProps) {
     { path: '/products', label: 'Products' },
     { path: '/sync', label: 'Sync' },
   ]
+
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/auth')
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,6 +56,17 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 ))}
               </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                {userInfo?.email || 'Loading...'}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>

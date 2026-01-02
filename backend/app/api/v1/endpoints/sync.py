@@ -2,9 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
+from app.core.auth import get_session
+from app.core.user import get_current_user_id
 from app.models.sync_log import SyncLog, SyncType, SyncStatus
 from app.schemas.sync import SyncLog as SyncLogSchema, SyncRequest
 from app.services.sync_service import SyncService
+from supertokens_python.recipe.session import SessionContainer
 
 router = APIRouter()
 
@@ -13,10 +16,12 @@ router = APIRouter()
 async def sync_orders_import(
     sync_request: SyncRequest,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
 ):
-    """Import orders from Etsy or TikTok Shop"""
-    sync_service = SyncService(db)
+    """Import orders from Etsy or TikTok Shop for the authenticated user"""
+    user_id = get_current_user_id(db, session)
+    sync_service = SyncService(db, user_id=user_id)
     
     # Create sync log
     sync_log = SyncLog(
@@ -42,10 +47,12 @@ async def sync_orders_import(
 async def sync_products_export(
     sync_request: SyncRequest,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
 ):
-    """Export products to Etsy or TikTok Shop"""
-    sync_service = SyncService(db)
+    """Export products to Etsy or TikTok Shop for the authenticated user"""
+    user_id = get_current_user_id(db, session)
+    sync_service = SyncService(db, user_id=user_id)
     
     # Create sync log
     sync_log = SyncLog(

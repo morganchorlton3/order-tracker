@@ -5,8 +5,11 @@ from typing import Optional
 from datetime import datetime, timedelta
 from app.core.database import get_db
 from app.core.config import settings
+from app.core.auth import get_session
+from app.core.user import get_or_create_user
 from app.models.oauth_token import OAuthToken
 from app.models.oauth_state import OAuthState
+from supertokens_python.recipe.session import SessionContainer
 import httpx
 import secrets
 import base64
@@ -66,7 +69,8 @@ async def etsy_callback(
     state: Optional[str] = Query(None),
     error: Optional[str] = Query(None),
     error_description: Optional[str] = Query(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
 ):
     """Handle Etsy OAuth callback with PKCE"""
     if not settings.ETSY_API_KEY or not settings.ETSY_API_SECRET:
@@ -165,9 +169,13 @@ async def etsy_callback(
         expires_in = token_data.get("expires_in", 3600)
         expires_at = datetime.utcnow() + timedelta(seconds=expires_in)
         
-        # Store or update token in database
+        # Get or create user in local database
+        user = get_or_create_user(db, session)
+        
+        # Store or update token in database (user-specific)
         existing_token = db.query(OAuthToken).filter(
-            OAuthToken.source == "etsy"
+            OAuthToken.source == "etsy",
+            OAuthToken.user_id == user.id
         ).first()
 
         print(f"Shop info: {shop_info}")
@@ -181,6 +189,7 @@ async def etsy_callback(
             existing_token.shop_name = shop_info.get("name", "")
         else:
             new_token = OAuthToken(
+                user_id=user.id,
                 source="etsy",
                 access_token=access_token,
                 refresh_token=token_data.get("refresh_token"),
@@ -328,9 +337,16 @@ async def _get_shop_info(access_token: str) -> Optional[dict]:
 
 
 @router.get("/etsy/status")
-async def etsy_status(db: Session = Depends(get_db)):
-    """Check Etsy authentication status"""
-    token = db.query(OAuthToken).filter(OAuthToken.source == "etsy").first()
+async def etsy_status(
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Check Etsy authentication status for the authenticated user"""
+    user = get_or_create_user(db, session)
+    token = db.query(OAuthToken).filter(
+        OAuthToken.source == "etsy",
+        OAuthToken.user_id == user.id
+    ).first()
     
     if not token:
         return {
@@ -348,5 +364,20 @@ async def etsy_status(db: Session = Depends(get_db)):
         "shop_name": token.shop_name,
         "shop_id": token.shop_id,
         "expires_at": token.expires_at.isoformat() if token.expires_at else None,
+    }
+
+
+@router.get("/user/sync")
+async def sync_user(
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Sync/create user in local database after SuperTokens authentication"""
+    user = get_or_create_user(db, session)
+    return {
+        "id": user.id,
+        "email": user.email,
+        "supertokens_user_id": user.supertokens_user_id,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
     }
 

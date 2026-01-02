@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Text, DateTime, JSON, Enum
+from sqlalchemy import Column, Integer, String, Float, Text, DateTime, JSON, Enum, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
 from app.core.database import Base
@@ -15,9 +16,10 @@ class Product(Base):
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     name = Column(String, nullable=False, index=True)
     description = Column(Text)
-    sku = Column(String, unique=True, index=True)
+    sku = Column(String, index=True)
     
     # Pricing
     price = Column(Float, nullable=False)
@@ -41,4 +43,7 @@ class Product(Base):
     # Timestamps
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    
+    # Relationships
+    user = relationship("User", back_populates="products")
 

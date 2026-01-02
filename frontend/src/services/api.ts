@@ -1,10 +1,22 @@
 import axios from 'axios'
+import Session from 'supertokens-auth-react/recipe/session'
 
 const api = axios.create({
   baseURL: '/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
+})
+
+// Add session token to requests
+api.interceptors.request.use(async (config) => {
+  if (await Session.doesSessionExist()) {
+    const accessToken = await Session.getAccessToken()
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`
+    }
+  }
+  return config
 })
 
 export interface Order {
@@ -148,6 +160,11 @@ export const getEtsyAuthStatus = async () => {
 
 export const getEtsyAuthUrl = async () => {
   const response = await api.get<{ authorization_url: string; state: string; message: string }>('/auth/etsy/authorize')
+  return response.data
+}
+
+export const syncUser = async () => {
+  const response = await api.get('/auth/user/sync')
   return response.data
 }
 

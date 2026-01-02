@@ -56,7 +56,7 @@ order-tracker/
 
 - Python 3.9+
 - Node.js 18+
-- Docker and Docker Compose (for database) - [Install Docker](https://docs.docker.com/get-docker/)
+- Docker and Docker Compose (for database and SuperTokens) - [Install Docker](https://docs.docker.com/get-docker/)
 
 ### Database Setup with Docker Compose
 

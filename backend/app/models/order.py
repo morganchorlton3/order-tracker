@@ -22,7 +22,8 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, index=True)
-    external_id = Column(String, unique=True, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    external_id = Column(String, nullable=False, index=True)
     source = Column(Enum(OrderSource), nullable=False)
     status = Column(Enum(OrderStatus), default=OrderStatus.PENDING)
     
@@ -42,5 +43,6 @@ class Order(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     
     # Relationships
+    user = relationship("User", back_populates="orders")
     sync_logs = relationship("SyncLog", back_populates="order")
 

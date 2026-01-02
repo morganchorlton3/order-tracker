@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     # CORS
     FRONTEND_URL: str = "http://localhost:3000"
     
+    # SuperTokens
+    SUPERTOKENS_CONNECTION_URI: str = "http://localhost:3567"
+    SUPERTOKENS_API_KEY: Optional[str] = None
+    SUPERTOKENS_API_DOMAIN: str = "localhost"
+    SUPERTOKENS_WEBSITE_DOMAIN: str = "http://localhost:3000"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

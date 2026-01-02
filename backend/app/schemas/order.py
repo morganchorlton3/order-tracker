@@ -8,6 +8,7 @@ class OrderBase(BaseModel):
     external_id: str
     source: OrderSource
     status: OrderStatus = OrderStatus.PENDING
+    user_id: Optional[int] = None  # Will be set by the endpoint
     customer_name: str
     customer_email: Optional[EmailStr] = None
     shipping_address: Optional[Dict[str, Any]] = None

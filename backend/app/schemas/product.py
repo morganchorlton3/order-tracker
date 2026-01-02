@@ -8,6 +8,7 @@ class ProductBase(BaseModel):
     name: str
     description: Optional[str] = None
     sku: Optional[str] = None
+    user_id: Optional[int] = None  # Will be set by the endpoint
     price: float
     currency: str = "USD"
     quantity: int = 0

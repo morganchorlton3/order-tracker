@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
 
@@ -7,6 +8,7 @@ class OAuthToken(Base):
     __tablename__ = "oauth_tokens"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     source = Column(String, nullable=False, index=True)  # "etsy" or "tiktok_shop"
     access_token = Column(Text, nullable=False)
     refresh_token = Column(Text, nullable=True)
@@ -18,4 +20,7 @@ class OAuthToken(Base):
     # Timestamps
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    
+    # Relationships
+    user = relationship("User", back_populates="oauth_tokens")
 

@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.core.config import settings
 from app.core.database import Base
-from app.models import Order, Product, SyncLog, OAuthToken, OAuthState  # Import all models
+from app.models import Order, Product, SyncLog, OAuthToken, OAuthState, User  # Import all models
 
 # this is the Alembic Config object
 config = context.config

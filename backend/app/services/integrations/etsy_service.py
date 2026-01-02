@@ -7,21 +7,23 @@ from app.models.oauth_token import OAuthToken
 
 
 class EtsyService:
-    def __init__(self, db: Optional[Session] = None):
+    def __init__(self, db: Optional[Session] = None, user_id: Optional[int] = None):
         self.api_key = settings.ETSY_API_KEY
         self.api_secret = settings.ETSY_API_SECRET
         self.redirect_uri = settings.ETSY_REDIRECT_URI
         self.base_url = "https://openapi.etsy.com/v3"
         self.db = db
+        self.user_id = user_id
 
     def get_access_token(self) -> Optional[str]:
         """Get the current access token from database"""
-        if not self.db:
+        if not self.db or not self.user_id:
             return None
         
         try:
             token = self.db.query(OAuthToken).filter(
-                OAuthToken.source == "etsy"
+                OAuthToken.source == "etsy",
+                OAuthToken.user_id == self.user_id
             ).first()
             
             if not token:

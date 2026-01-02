@@ -6,9 +6,10 @@ from app.services.integrations.tiktok_shop_service import TikTokShopService
 
 
 class SyncService:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, user_id: int):
         self.db = db
-        self.etsy_service = EtsyService(db=db)
+        self.user_id = user_id
+        self.etsy_service = EtsyService(db=db, user_id=user_id)
         self.tiktok_shop_service = TikTokShopService()
 
     async def import_orders(self, sync_log_id: int, source: str):
@@ -44,16 +45,20 @@ class SyncService:
                         # Transform Etsy receipt to our order format
                         order_data = self.etsy_service.transform_receipt_to_order(receipt)
                         
-                        # Check if order already exists
+                        # Add user_id to order_data
+                        order_data["user_id"] = self.user_id
+                        
+                        # Check if order already exists (user-specific)
                         existing_order = self.db.query(Order).filter(
                             Order.external_id == order_data["external_id"],
-                            Order.source == OrderSource.ETSY
+                            Order.source == OrderSource.ETSY,
+                            Order.user_id == self.user_id
                         ).first()
                         
                         if existing_order:
                             # Update existing order
                             for key, value in order_data.items():
-                                if key != "external_id" and key != "source":
+                                if key not in ["external_id", "source", "user_id"]:
                                     setattr(existing_order, key, value)
                             records_successful += 1
                         else:
