@@ -44,7 +44,7 @@ export default function Orders() {
                     </div>
                     <div className="ml-2 flex-shrink-0 flex">
                       <p className="text-sm font-medium text-gray-900">
-                        ${order.total_amount.toFixed(2)}
+                        £{order.total_amount.toFixed(2)}
                       </p>
                     </div>
                   </div>

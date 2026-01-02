@@ -23,6 +23,10 @@ export interface Order {
   updated_at: string
 }
 
+export interface OrdersCount {
+  count: number
+}
+
 export interface Product {
   id: number
   name: string
@@ -57,6 +61,11 @@ export interface SyncLog {
 
 export const getOrders = async (params?: { skip?: number; limit?: number; source?: string; status?: string }) => {
   const response = await api.get<Order[]>('/orders', { params })
+  return response.data
+}
+
+export const getOrdersCount = async () => {
+  const response = await api.get<OrdersCount>('/orders/count')
   return response.data
 }
 
@@ -120,6 +129,25 @@ export const getSyncLogs = async () => {
 
 export const getSyncLog = async (id: number) => {
   const response = await api.get<SyncLog>(`/sync/logs/${id}`)
+  return response.data
+}
+
+export interface EtsyAuthStatus {
+  authenticated: boolean
+  expired?: boolean
+  shop_name?: string
+  shop_id?: string
+  expires_at?: string
+  message?: string
+}
+
+export const getEtsyAuthStatus = async () => {
+  const response = await api.get<EtsyAuthStatus>('/auth/etsy/status')
+  return response.data
+}
+
+export const getEtsyAuthUrl = async () => {
+  const response = await api.get<{ authorization_url: string; state: string; message: string }>('/auth/etsy/authorize')
   return response.data
 }
 

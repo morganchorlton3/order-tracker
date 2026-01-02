@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { syncOrdersImport, syncProductsExport, getSyncLogs } from '../services/api'
+import EtsyAuth from '../components/EtsyAuth'
 
 export default function Sync() {
   const queryClient = useQueryClient()
@@ -41,6 +42,10 @@ export default function Sync() {
         <p className="mt-2 text-sm text-gray-600">
           Sync orders and products with Etsy and TikTok Shop
         </p>
+      </div>
+
+      <div className="mb-6">
+        <EtsyAuth />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

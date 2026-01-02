@@ -161,15 +161,36 @@ The frontend will be available at `http://localhost:3000`
 
 ### Etsy API
 
-1. Create an Etsy app at https://www.etsy.com/developers/
-2. Get your API key and secret
-3. Add them to your `.env` file:
+1. **Create an Etsy App**:
+   - Go to https://www.etsy.com/developers/
+   - Sign in and create a new app
+   - Note your API key (keystring) and shared secret
+   - Set the redirect URI to: `http://localhost:8000/api/v1/auth/etsy/callback`
+
+2. **Configure Environment Variables**:
+   Add to your `backend/.env` file:
    ```
-   ETSY_API_KEY=your-api-key
-   ETSY_API_SECRET=your-api-secret
+   ETSY_API_KEY=your-api-key-keystring
+   ETSY_API_SECRET=your-shared-secret
+   ETSY_REDIRECT_URI=http://localhost:8000/api/v1/auth/etsy/callback
    ```
 
-**Note**: Etsy uses OAuth 2.0. You'll need to implement OAuth flow to get access tokens. The current implementation has placeholder methods that need to be completed.
+3. **Authenticate with Etsy**:
+   - Start your backend server
+   - Visit: `http://localhost:8000/api/v1/auth/etsy/authorize`
+   - Copy the `authorization_url` from the response
+   - Open that URL in your browser and authorize the app
+   - You'll be redirected back and the access token will be saved
+
+4. **Check Authentication Status**:
+   - Visit: `http://localhost:8000/api/v1/auth/etsy/status`
+   - This shows if you're authenticated and your shop information
+
+5. **Sync Orders**:
+   - Use the Sync page in the frontend or call the API:
+   - `POST /api/v1/sync/orders/import` with `{"source": "etsy"}`
+
+**Note**: The OAuth token is stored in the database and will be used automatically for API calls. Tokens expire after a period, so you may need to re-authenticate.
 
 ### TikTok Shop API
 

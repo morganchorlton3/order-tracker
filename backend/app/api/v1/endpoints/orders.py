@@ -27,6 +27,11 @@ def get_orders(
     orders = query.offset(skip).limit(limit).all()
     return orders
 
+@router.get("/count", response_model=dict)
+def get_orders_count(db: Session = Depends(get_db)):
+    """Get the total number of orders"""
+    return { "count": db.query(Order).count() }
+
 
 @router.get("/{order_id}", response_model=OrderSchema)
 def get_order(order_id: int, db: Session = Depends(get_db)):

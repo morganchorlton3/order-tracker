@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     # API Keys
     ETSY_API_KEY: Optional[str] = None
     ETSY_API_SECRET: Optional[str] = None
+    ETSY_REDIRECT_URI: Optional[str] = "http://localhost:8000/api/v1/auth/etsy/callback"
     TIKTOK_SHOP_API_KEY: Optional[str] = None
     TIKTOK_SHOP_API_SECRET: Optional[str] = None
     

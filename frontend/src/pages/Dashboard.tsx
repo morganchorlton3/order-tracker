@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { getOrders, getProducts } from '../services/api'
+import { getOrdersCount, getProducts } from '../services/api'
 
 export default function Dashboard() {
-  const { data: orders } = useQuery({
-    queryKey: ['orders'],
-    queryFn: () => getOrders({ limit: 10 }),
+  const { data: ordersCount } = useQuery({
+    queryKey: ['ordersCount'],
+    queryFn: () => getOrdersCount(),
   })
 
   const { data: products } = useQuery({
@@ -46,7 +46,7 @@ export default function Dashboard() {
                     Total Orders
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
-                    {orders?.length || 0}
+                    {ordersCount?.count || 0}
                   </dd>
                 </dl>
               </div>
