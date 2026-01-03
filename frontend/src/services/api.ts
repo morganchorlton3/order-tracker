@@ -84,6 +84,11 @@ export const getOrders = async (params?: {
   source?: 'etsy' | 'tiktok_shop'
   status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
   search?: string
+  currency?: string
+  min_amount?: number
+  max_amount?: number
+  date_from?: string
+  date_to?: string
 }) => {
   const response = await api.get<OrdersResponse>('/orders', { params })
   return response.data

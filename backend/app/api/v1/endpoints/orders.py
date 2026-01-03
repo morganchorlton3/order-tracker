@@ -18,11 +18,17 @@ def get_orders(
     source: Optional[OrderSource] = None,
     status: Optional[OrderStatus] = None,
     search: Optional[str] = Query(None, description="Search in customer name, email, or external_id"),
+    currency: Optional[str] = Query(None, description="Filter by currency code"),
+    min_amount: Optional[float] = Query(None, ge=0, description="Minimum order amount"),
+    max_amount: Optional[float] = Query(None, ge=0, description="Maximum order amount"),
+    date_from: Optional[str] = Query(None, description="Filter orders from this date (YYYY-MM-DD)"),
+    date_to: Optional[str] = Query(None, description="Filter orders to this date (YYYY-MM-DD)"),
     db: Session = Depends(get_db),
     session: SessionContainer = Depends(get_session)
 ):
     """Get all orders for the authenticated user with optional filtering, pagination, and search"""
-    from sqlalchemy import or_
+    from sqlalchemy import or_, and_
+    from datetime import datetime
     
     user_id = get_current_user_id(db, session)
     
@@ -42,11 +48,38 @@ def get_orders(
         )
         query = query.filter(search_filter)
     
+    # Currency filter
+    if currency:
+        query = query.filter(Order.currency == currency.upper())
+    
+    # Amount range filters
+    if min_amount is not None:
+        query = query.filter(Order.total_amount >= min_amount)
+    if max_amount is not None:
+        query = query.filter(Order.total_amount <= max_amount)
+    
+    # Date range filters
+    if date_from:
+        try:
+            date_from_obj = datetime.strptime(date_from, "%Y-%m-%d")
+            query = query.filter(Order.order_date >= date_from_obj)
+        except ValueError:
+            pass  # Invalid date format, ignore
+    
+    if date_to:
+        try:
+            date_to_obj = datetime.strptime(date_to, "%Y-%m-%d")
+            # Include the entire day by setting time to end of day
+            date_to_obj = date_to_obj.replace(hour=23, minute=59, second=59)
+            query = query.filter(Order.order_date <= date_to_obj)
+        except ValueError:
+            pass  # Invalid date format, ignore
+    
     # Get total count before pagination
     total = query.count()
     
-    # Apply pagination - order by newest first (id descending, then order_date descending)
-    orders = query.order_by(Order.id.desc(), Order.order_date.desc()).offset(skip).limit(limit).all()
+    # Apply pagination - order by newest first (order_date descending, then id descending as tiebreaker)
+    orders = query.order_by(Order.order_date.desc(), Order.id.desc()).offset(skip).limit(limit).all()
     
     return {
         "items": orders,
