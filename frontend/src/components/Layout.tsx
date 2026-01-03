@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleLogout = async () => {
     await signOut()
-    navigate('/auth')
+    navigate('/')
   }
 
   return (

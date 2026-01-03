@@ -1,13 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react/ui"
-import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui"
 import { SessionAuth } from "supertokens-auth-react/recipe/session"
 import { useEffect } from 'react'
-import * as reactRouterDom from "react-router-dom"
 import './config/supertokens'
 import Layout from './components/Layout'
 import Landing from './pages/Landing'
+import SignIn from './pages/SignIn'
+import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Orders from './pages/Orders'
 import Products from './pages/Products'
@@ -36,8 +35,9 @@ function App() {
           {/* Public landing page */}
           <Route path="/" element={<Landing />} />
           
-          {/* SuperTokens auth routes */}
-          {getSuperTokensRoutesForReactRouterDom(reactRouterDom, [EmailPasswordPreBuiltUI])}
+          {/* Auth routes */}
+          <Route path="/auth/signin" element={<SignIn />} />
+          <Route path="/auth/signup" element={<SignUp />} />
           
           {/* Protected routes */}
           <Route
