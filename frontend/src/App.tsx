@@ -11,7 +11,7 @@ import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Orders from './pages/Orders'
 import Products from './pages/Products'
-import Sync from './pages/Sync'
+import Settings from './pages/Settings'
 import EtsyCallback from './pages/EtsyCallback'
 import { syncUser } from './services/api'
 
@@ -52,7 +52,7 @@ function App() {
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/orders" element={<Orders />} />
                       <Route path="/products" element={<Products />} />
-                      <Route path="/sync" element={<Sync />} />
+                      <Route path="/settings" element={<Settings />} />
                       <Route path="/auth/etsy/callback" element={<EtsyCallback />} />
                     </Routes>
                   </Layout>

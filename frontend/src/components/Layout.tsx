@@ -4,6 +4,7 @@ import { useSessionContext } from 'supertokens-auth-react/recipe/session'
 import { useQuery } from '@tanstack/react-query'
 import { syncUser } from '../services/api'
 import { useTheme } from '../contexts/ThemeContext'
+import { useState, useRef, useEffect } from 'react'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -14,6 +15,8 @@ export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate()
   const session = useSessionContext()
   const { theme, toggleTheme } = useTheme()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Fetch user info to get email
   const { data: userInfo } = useQuery({
@@ -22,11 +25,24 @@ export default function Layout({ children }: LayoutProps) {
     enabled: !session.loading,
   })
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
   const navItems = [
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/orders', label: 'Orders' },
     { path: '/products', label: 'Products' },
-    { path: '/sync', label: 'Sync' },
   ]
 
   const handleLogout = async () => {
@@ -60,9 +76,6 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 dark:text-gray-300">
-                {userInfo?.name ? `Hi, ${userInfo.name}` : userInfo?.email || 'Loading...'}
-              </span>
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -78,12 +91,51 @@ export default function Layout({ children }: LayoutProps) {
                   </svg>
                 )}
               </button>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-              >
-                Logout
-              </button>
+              
+              {/* User Dropdown */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none"
+                >
+                  <span>{userInfo?.name ? `Hi, ${userInfo.name}` : userInfo?.email || 'Loading...'}</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <div className="py-1">
+                      <Link
+                        to="/settings"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className={`block px-4 py-2 text-sm ${
+                          location.pathname === '/settings'
+                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        Settings
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsDropdownOpen(false)
+                          handleLogout()
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
