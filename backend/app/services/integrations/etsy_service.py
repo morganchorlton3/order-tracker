@@ -274,8 +274,8 @@ class EtsyService:
         else:
             status = "pending"
         
-        # Parse order date
-        created_timestamp = receipt.get("creation_timestamp", 0)
+        # Parse order date - Etsy uses create_timestamp or creation_timestamp
+        created_timestamp = receipt.get("creation_timestamp") or receipt.get("create_timestamp") or receipt.get("created_timestamp") or 0
         order_date = datetime.fromtimestamp(created_timestamp, tz=timezone.utc)
         
         return {
