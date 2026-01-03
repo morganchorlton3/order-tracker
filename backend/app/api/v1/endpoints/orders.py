@@ -99,6 +99,107 @@ def get_orders_count(
     return { "count": count }
 
 
+@router.get("/stats/last-30-days", response_model=dict)
+def get_last_30_days_stats(
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Get statistics for the last 30 days"""
+    from datetime import datetime, timedelta, timezone
+    
+    user_id = get_current_user_id(db, session)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    
+    # Get orders from last 30 days
+    orders = db.query(Order).filter(
+        Order.user_id == user_id,
+        Order.order_date >= thirty_days_ago
+    ).all()
+    
+    total_orders = len(orders)
+    total_revenue = sum(order.total_amount for order in orders)
+    avg_order_value = total_revenue / total_orders if total_orders > 0 else 0
+    
+    # Count by status
+    status_counts = {}
+    for order in orders:
+        status_counts[order.status.value] = status_counts.get(order.status.value, 0) + 1
+    
+    # Count by source
+    source_counts = {}
+    for order in orders:
+        source_counts[order.source.value] = source_counts.get(order.source.value, 0) + 1
+    
+    return {
+        "total_orders": total_orders,
+        "total_revenue": total_revenue,
+        "average_order_value": avg_order_value,
+        "status_breakdown": status_counts,
+        "source_breakdown": source_counts,
+    }
+
+
+@router.get("/stats/over-time", response_model=dict)
+def get_orders_over_time(
+    months: int = Query(12, ge=1, le=24, description="Number of months to look back"),
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Get order statistics over time grouped by month and channel"""
+    from datetime import datetime, timedelta, timezone, date
+    from collections import defaultdict
+    
+    user_id = get_current_user_id(db, session)
+    # Calculate start date based on months
+    start_date = datetime.now(timezone.utc) - timedelta(days=months * 30)
+    
+    # Get all orders in the date range
+    orders = db.query(Order).filter(
+        Order.user_id == user_id,
+        Order.order_date >= start_date
+    ).all()
+    
+    # Organize data by month and source
+    data_by_month = defaultdict(lambda: {'etsy': {'orders': 0, 'revenue': 0}, 'tiktok_shop': {'orders': 0, 'revenue': 0}})
+    
+    for order in orders:
+        # Extract date part (without time)
+        order_date = order.order_date.date() if hasattr(order.order_date, 'date') else order.order_date
+        if isinstance(order_date, str):
+            order_date = datetime.fromisoformat(order_date.replace('Z', '+00:00')).date()
+        elif not isinstance(order_date, date):
+            order_date = datetime.fromtimestamp(order_date).date() if isinstance(order_date, (int, float)) else date.today()
+        
+        # Create month key (YYYY-MM format)
+        month_key = f"{order_date.year}-{order_date.month:02d}"
+        source = order.source.value
+        
+        data_by_month[month_key][source]['orders'] += 1
+        data_by_month[month_key][source]['revenue'] += order.total_amount
+    
+    # Convert to list format for frontend, sorted by month
+    chart_data = []
+    for month_key in sorted(data_by_month.keys()):
+        # Format month for display (e.g., "2024-01" -> "Jan 2024")
+        year, month = month_key.split('-')
+        month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        month_display = f"{month_names[int(month) - 1]} {year}"
+        
+        chart_data.append({
+            'month': month_key,
+            'month_display': month_display,
+            'etsy_orders': data_by_month[month_key]['etsy']['orders'],
+            'etsy_revenue': data_by_month[month_key]['etsy']['revenue'],
+            'tiktok_shop_orders': data_by_month[month_key]['tiktok_shop']['orders'],
+            'tiktok_shop_revenue': data_by_month[month_key]['tiktok_shop']['revenue'],
+        })
+    
+    return {
+        "months": months,
+        "data": chart_data
+    }
+
+
 @router.get("/{order_id}", response_model=OrderSchema)
 def get_order(
     order_id: int, 

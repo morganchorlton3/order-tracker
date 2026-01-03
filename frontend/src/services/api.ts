@@ -99,6 +99,38 @@ export const getOrdersCount = async () => {
   return response.data
 }
 
+export interface Last30DaysStats {
+  total_orders: number
+  total_revenue: number
+  average_order_value: number
+  status_breakdown: Record<string, number>
+  source_breakdown: Record<string, number>
+}
+
+export const getLast30DaysStats = async () => {
+  const response = await api.get<Last30DaysStats>('/orders/stats/last-30-days')
+  return response.data
+}
+
+export interface OrdersOverTimeData {
+  month: string
+  month_display: string
+  etsy_orders: number
+  etsy_revenue: number
+  tiktok_shop_orders: number
+  tiktok_shop_revenue: number
+}
+
+export interface OrdersOverTime {
+  months: number
+  data: OrdersOverTimeData[]
+}
+
+export const getOrdersOverTime = async (months: number = 12) => {
+  const response = await api.get<OrdersOverTime>('/orders/stats/over-time', { params: { months } })
+  return response.data
+}
+
 export const getOrder = async (id: number) => {
   const response = await api.get<Order>(`/orders/${id}`)
   return response.data
