@@ -59,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                {userInfo?.email || 'Loading...'}
+                {userInfo?.name ? `Hi, ${userInfo.name}` : userInfo?.email || 'Loading...'}
               </span>
               <button
                 onClick={handleLogout}

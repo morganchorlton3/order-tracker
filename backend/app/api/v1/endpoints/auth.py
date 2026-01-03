@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -380,6 +381,38 @@ async def sync_user(
     return {
         "id": user.id,
         "email": user.email,
+        "name": user.name,
+        "supertokens_user_id": user.supertokens_user_id,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+    }
+
+
+class UserProfileUpdate(BaseModel):
+    name: str  # Required field
+
+
+@router.put("/user/profile")
+async def update_user_profile(
+    profile_data: UserProfileUpdate,
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Update user profile information"""
+    user = get_or_create_user(db, session)
+    
+    # Name is required, so validate it's not empty
+    if not profile_data.name or not profile_data.name.strip():
+        raise HTTPException(status_code=400, detail="Name is required and cannot be empty")
+    
+    user.name = profile_data.name.strip()
+    
+    db.commit()
+    db.refresh(user)
+    
+    return {
+        "id": user.id,
+        "email": user.email,
+        "name": user.name,
         "supertokens_user_id": user.supertokens_user_id,
         "created_at": user.created_at.isoformat() if user.created_at else None,
     }

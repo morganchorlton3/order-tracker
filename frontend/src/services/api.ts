@@ -181,3 +181,8 @@ export const syncUser = async () => {
   return response.data
 }
 
+export const updateUserProfile = async (data: { name?: string }) => {
+  const response = await api.put('/auth/user/profile', data)
+  return response.data
+}
+

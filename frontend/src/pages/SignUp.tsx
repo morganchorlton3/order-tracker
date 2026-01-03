@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { signUp } from 'supertokens-auth-react/recipe/emailpassword'
+import { updateUserProfile } from '../services/api'
 
 export default function SignUp() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -26,6 +28,12 @@ export default function SignUp() {
       return
     }
 
+    // Validate name is provided
+    if (!name.trim()) {
+      setError('Name is required.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -43,6 +51,15 @@ export default function SignUp() {
       })
 
       if (response.status === 'OK') {
+        // Update user profile with name (required)
+        try {
+          await updateUserProfile({ name: name.trim() })
+        } catch (err) {
+          console.error('Failed to update user name:', err)
+          setError('Account created but failed to save name. Please update your profile.')
+          setLoading(false)
+          return
+        }
         // Redirect to dashboard on success
         navigate('/dashboard')
       } else {
@@ -109,6 +126,28 @@ export default function SignUp() {
                 </div>
               </div>
             )}
+
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name
+              </label>
+              <div className="mt-1">
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Enter your name"
+                />
+              </div>
+            </div>
 
             <div>
               <label

@@ -67,9 +67,12 @@ def get_or_create_user(db: Session, session: SessionContainer) -> User:
         print(f"Warning: Could not retrieve email for user {supertokens_user_id}, using placeholder")
         email = f"{supertokens_user_id}@supertokens.local"
     
+    # Name will be set via the profile update endpoint after signup
+    # For now, use email as a temporary name
     user = User(
         supertokens_user_id=supertokens_user_id,
-        email=email
+        email=email,
+        name=email  # Temporary - will be updated via profile endpoint
     )
     db.add(user)
     db.commit()
