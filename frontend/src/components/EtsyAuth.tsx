@@ -70,8 +70,8 @@ export default function EtsyAuth() {
 
   if (isLoading) {
     return (
-      <div className="bg-white shadow rounded-lg p-6">
-        <p className="text-gray-600">Checking authentication status...</p>
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <p className="text-gray-600 dark:text-gray-400">Checking authentication status...</p>
       </div>
     )
   }
@@ -79,17 +79,17 @@ export default function EtsyAuth() {
   const isAuthenticated = authStatus?.authenticated === true
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
+    <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium text-gray-900">Etsy Authentication</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Etsy Authentication</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {isAuthenticated
               ? `Connected to ${authStatus.shop_name || 'your Etsy shop'}`
               : 'Connect your Etsy account to sync orders'}
           </p>
           {isAuthenticated && authStatus.expires_at && (
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
               Expires: {new Date(authStatus.expires_at).toLocaleString()}
             </p>
           )}
@@ -97,7 +97,7 @@ export default function EtsyAuth() {
         <div>
           {isAuthenticated ? (
             <div className="flex items-center space-x-2">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                 Connected
               </span>
             </div>
@@ -105,7 +105,7 @@ export default function EtsyAuth() {
             <button
               onClick={handleAuthorize}
               disabled={authorizeMutation.isPending || authWindow !== null}
-              className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-purple-600 dark:bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-700 dark:hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {authorizeMutation.isPending || authWindow !== null
                 ? 'Opening...'
@@ -115,8 +115,8 @@ export default function EtsyAuth() {
         </div>
       </div>
       {authWindow && (
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <p className="text-sm text-blue-800">
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-md">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
             Please complete the authorization in the popup window. If the popup was blocked, please allow popups for this site.
           </p>
         </div>
