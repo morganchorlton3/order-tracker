@@ -56,20 +56,20 @@ export default function Dashboard() {
   return (
     <div className="px-4 py-6 sm:px-0">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Overview of your orders and sales performance
         </p>
       </div>
 
       {/* Last 30 Days Stats */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Last 30 Days</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Last 30 Days</h2>
         {statsLoading ? (
-          <div className="text-center py-8">Loading stats...</div>
+          <div className="text-center py-8 text-gray-600 dark:text-gray-400">Loading stats...</div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -89,10 +89,10 @@ export default function Dashboard() {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Orders
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Total Orders
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900 dark:text-white">
                         {stats?.total_orders || 0}
                       </dd>
                     </dl>
@@ -101,7 +101,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -121,10 +121,10 @@ export default function Dashboard() {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Revenue
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Total Revenue
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900 dark:text-white">
                         {stats ? formatCurrency(stats.total_revenue) : '£0.00'}
                       </dd>
                     </dl>
@@ -133,7 +133,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -153,10 +153,10 @@ export default function Dashboard() {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Avg Order Value
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Avg Order Value
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900 dark:text-white">
                         {stats ? formatCurrency(stats.average_order_value) : '£0.00'}
                       </dd>
                     </dl>
@@ -165,7 +165,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -185,10 +185,10 @@ export default function Dashboard() {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Products
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Total Products
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900 dark:text-white">
                         {products?.length || 0}
                       </dd>
                     </dl>
@@ -203,10 +203,10 @@ export default function Dashboard() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Orders Over Time Chart */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Orders Per Month</h3>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Orders Per Month</h3>
           {chartLoading ? (
-            <div className="text-center py-8">Loading chart...</div>
+            <div className="text-center py-8 text-gray-600 dark:text-gray-400">Loading chart...</div>
           ) : chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
@@ -237,10 +237,10 @@ export default function Dashboard() {
         </div>
 
         {/* Revenue Over Time Chart */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Revenue Per Month</h3>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Revenue Per Month</h3>
           {chartLoading ? (
-            <div className="text-center py-8">Loading chart...</div>
+            <div className="text-center py-8 text-gray-600 dark:text-gray-400">Loading chart...</div>
           ) : chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData}>
@@ -261,15 +261,15 @@ export default function Dashboard() {
 
       {/* Source Breakdown */}
       {stats && stats.source_breakdown && Object.keys(stats.source_breakdown).length > 0 && (
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Orders by Channel (Last 30 Days)</h3>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Orders by Channel (Last 30 Days)</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {Object.entries(stats.source_breakdown).map(([source, count]) => (
-              <div key={source} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium text-gray-700 capitalize">
+              <div key={source} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
                   {source === 'etsy' ? 'Etsy' : source === 'tiktok_shop' ? 'TikTok Shop' : source}
                 </span>
-                <span className="text-lg font-semibold text-gray-900">{count}</span>
+                <span className="text-lg font-semibold text-gray-900 dark:text-white">{count}</span>
               </div>
             ))}
           </div>

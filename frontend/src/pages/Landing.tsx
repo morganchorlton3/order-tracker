@@ -1,25 +1,43 @@
 import { Link } from 'react-router-dom'
+import { useTheme } from '../contexts/ThemeContext'
 
 export default function Landing() {
+  const { theme, toggleTheme } = useTheme()
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">Order Tracker</h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Order Tracker</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label="Toggle dark mode"
+              >
+                {theme === 'dark' ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </button>
               <Link
                 to="/auth/signin"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Sign In
               </Link>
               <Link
                 to="/auth/signup"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
                 Get Started
               </Link>
@@ -48,7 +66,7 @@ export default function Landing() {
             </Link>
             <a
               href="#features"
-              className="bg-white hover:bg-gray-50 text-gray-900 px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-gray-300 transition duration-150"
+              className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-gray-300 dark:border-gray-600 transition duration-150"
             >
               Learn More
             </a>
@@ -57,13 +75,13 @@ export default function Landing() {
       </div>
 
       {/* Features Section */}
-      <div id="features" className="bg-white py-20">
+      <div id="features" className="bg-white dark:bg-gray-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">
               Everything You Need to Manage Your Orders
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300">
               Powerful features to streamline your e-commerce operations
             </p>
           </div>
@@ -86,10 +104,10 @@ export default function Landing() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 Multi-Platform Sync
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Connect your Etsy and TikTok Shop accounts to automatically sync all your orders in real-time.
               </p>
             </div>
@@ -111,10 +129,10 @@ export default function Landing() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 Order Management
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 View, search, and filter all your orders with powerful pagination and search capabilities.
               </p>
             </div>
@@ -136,10 +154,10 @@ export default function Landing() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 Secure & Private
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Your data is secure and private. Each user only sees their own orders and data.
               </p>
             </div>
@@ -148,17 +166,17 @@ export default function Landing() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-blue-600 py-16">
+      <div className="bg-blue-600 dark:bg-blue-700 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-extrabold text-white mb-4">
             Ready to Get Started?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-blue-100 dark:text-blue-200 mb-8">
             Join today and start managing your orders more efficiently.
           </p>
           <Link
             to="/auth/signup"
-            className="bg-white hover:bg-gray-100 text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold shadow-lg transition duration-150 inline-block"
+            className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 px-8 py-3 rounded-lg text-lg font-semibold shadow-lg transition duration-150 inline-block"
           >
             Sign Up Free
           </Link>
@@ -166,7 +184,7 @@ export default function Landing() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-8">
+      <footer className="bg-gray-900 dark:bg-black text-gray-400 dark:text-gray-500 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p>&copy; {new Date().getFullYear()} Order Tracker. All rights reserved.</p>
         </div>

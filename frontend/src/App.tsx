@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionAuth } from "supertokens-auth-react/recipe/session"
 import { useEffect } from 'react'
 import './config/supertokens'
+import { ThemeProvider } from './contexts/ThemeContext'
 import Layout from './components/Layout'
 import Landing from './pages/Landing'
 import SignIn from './pages/SignIn'
@@ -29,37 +30,39 @@ function UserSync() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          {/* Public landing page */}
-          <Route path="/" element={<Landing />} />
-          
-          {/* Auth routes */}
-          <Route path="/auth/signin" element={<SignIn />} />
-          <Route path="/auth/signup" element={<SignUp />} />
-          
-          {/* Protected routes */}
-          <Route
-            path="/*"
-            element={
-              <SessionAuth>
-                <UserSync />
-                <Layout>
-                  <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/orders" element={<Orders />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/sync" element={<Sync />} />
-                    <Route path="/auth/etsy/callback" element={<EtsyCallback />} />
-                  </Routes>
-                </Layout>
-              </SessionAuth>
-            }
-          />
-        </Routes>
-      </Router>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
+            {/* Public landing page */}
+            <Route path="/" element={<Landing />} />
+            
+            {/* Auth routes */}
+            <Route path="/auth/signin" element={<SignIn />} />
+            <Route path="/auth/signup" element={<SignUp />} />
+            
+            {/* Protected routes */}
+            <Route
+              path="/*"
+              element={
+                <SessionAuth>
+                  <UserSync />
+                  <Layout>
+                    <Routes>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/orders" element={<Orders />} />
+                      <Route path="/products" element={<Products />} />
+                      <Route path="/sync" element={<Sync />} />
+                      <Route path="/auth/etsy/callback" element={<EtsyCallback />} />
+                    </Routes>
+                  </Layout>
+                </SessionAuth>
+              }
+            />
+          </Routes>
+        </Router>
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }
 
