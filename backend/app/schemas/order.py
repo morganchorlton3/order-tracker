@@ -39,3 +39,10 @@ class Order(OrderBase):
     class Config:
         from_attributes = True
 
+
+class OrdersResponse(BaseModel):
+    items: List[Order]
+    total: int
+    skip: int
+    limit: int
+

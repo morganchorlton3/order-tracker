@@ -5,22 +5,25 @@ from app.core.database import get_db
 from app.core.auth import get_session
 from app.core.user import get_current_user_id
 from app.models.order import Order, OrderSource, OrderStatus
-from app.schemas.order import Order as OrderSchema, OrderCreate, OrderUpdate
+from app.schemas.order import Order as OrderSchema, OrderCreate, OrderUpdate, OrdersResponse
 from supertokens_python.recipe.session import SessionContainer
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[OrderSchema])
+@router.get("/", response_model=OrdersResponse)
 def get_orders(
     skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=100),
+    limit: int = Query(50, ge=1, le=100),
     source: Optional[OrderSource] = None,
     status: Optional[OrderStatus] = None,
+    search: Optional[str] = Query(None, description="Search in customer name, email, or external_id"),
     db: Session = Depends(get_db),
     session: SessionContainer = Depends(get_session)
 ):
-    """Get all orders for the authenticated user with optional filtering"""
+    """Get all orders for the authenticated user with optional filtering, pagination, and search"""
+    from sqlalchemy import or_
+    
     user_id = get_current_user_id(db, session)
     
     query = db.query(Order).filter(Order.user_id == user_id)
@@ -30,13 +33,37 @@ def get_orders(
     if status:
         query = query.filter(Order.status == status)
     
-    orders = query.offset(skip).limit(limit).all()
-    return orders
+    # Add search functionality
+    if search:
+        search_filter = or_(
+            Order.customer_name.ilike(f"%{search}%"),
+            Order.customer_email.ilike(f"%{search}%"),
+            Order.external_id.ilike(f"%{search}%")
+        )
+        query = query.filter(search_filter)
+    
+    # Get total count before pagination
+    total = query.count()
+    
+    # Apply pagination - order by newest first (id descending, then order_date descending)
+    orders = query.order_by(Order.id.desc(), Order.order_date.desc()).offset(skip).limit(limit).all()
+    
+    return {
+        "items": orders,
+        "total": total,
+        "skip": skip,
+        "limit": limit
+    }
 
 @router.get("/count", response_model=dict)
-def get_orders_count(db: Session = Depends(get_db)):
-    """Get the total number of orders"""
-    return { "count": db.query(Order).count() }
+def get_orders_count(
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Get the total number of orders for the authenticated user"""
+    user_id = get_current_user_id(db, session)
+    count = db.query(Order).filter(Order.user_id == user_id).count()
+    return { "count": count }
 
 
 @router.get("/{order_id}", response_model=OrderSchema)

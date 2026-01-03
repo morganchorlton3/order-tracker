@@ -71,8 +71,21 @@ export interface SyncLog {
   completed_at?: string
 }
 
-export const getOrders = async (params?: { skip?: number; limit?: number; source?: string; status?: string }) => {
-  const response = await api.get<Order[]>('/orders', { params })
+export interface OrdersResponse {
+  items: Order[]
+  total: number
+  skip: number
+  limit: number
+}
+
+export const getOrders = async (params?: {
+  skip?: number
+  limit?: number
+  source?: 'etsy' | 'tiktok_shop'
+  status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  search?: string
+}) => {
+  const response = await api.get<OrdersResponse>('/orders', { params })
   return response.data
 }
 

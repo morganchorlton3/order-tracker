@@ -1,6 +1,6 @@
 import httpx
 from typing import List, Dict, Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.core.config import settings
 from sqlalchemy.orm import Session
 from app.models.oauth_token import OAuthToken
@@ -276,7 +276,7 @@ class EtsyService:
         
         # Parse order date
         created_timestamp = receipt.get("creation_timestamp", 0)
-        order_date = datetime.fromtimestamp(created_timestamp / 1000) if created_timestamp else datetime.utcnow()
+        order_date = datetime.fromtimestamp(created_timestamp, tz=timezone.utc)
         
         return {
             "external_id": str(receipt.get("receipt_id")),

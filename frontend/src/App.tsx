@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import * as reactRouterDom from "react-router-dom"
 import './config/supertokens'
 import Layout from './components/Layout'
+import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Orders from './pages/Orders'
 import Products from './pages/Products'
@@ -32,6 +33,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
+          {/* Public landing page */}
+          <Route path="/" element={<Landing />} />
+          
           {/* SuperTokens auth routes */}
           {getSuperTokensRoutesForReactRouterDom(reactRouterDom, [EmailPasswordPreBuiltUI])}
           
@@ -43,7 +47,7 @@ function App() {
                 <UserSync />
                 <Layout>
                   <Routes>
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/sync" element={<Sync />} />

@@ -19,8 +19,11 @@ router = APIRouter()
 
 
 @router.get("/etsy/authorize")
-async def etsy_authorize(db: Session = Depends(get_db)):
-    """Initiate Etsy OAuth flow with PKCE"""
+async def etsy_authorize(
+    db: Session = Depends(get_db),
+    session: SessionContainer = Depends(get_session)
+):
+    """Initiate Etsy OAuth flow with PKCE (requires authentication)"""
     if not settings.ETSY_API_KEY:
         raise HTTPException(status_code=400, detail="Etsy API key not configured")
     

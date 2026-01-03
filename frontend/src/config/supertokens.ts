@@ -10,7 +10,44 @@ SuperTokens.init({
     apiBasePath: "/auth",
   },
   recipeList: [
-    EmailPassword.init(),
+    EmailPassword.init({
+      signInAndUpFeature: {
+        signUpForm: {
+          formFields: [{
+            id: "email",
+            label: "Email",
+            placeholder: "Enter your email"
+          }, {
+            id: "password",
+            label: "Password",
+            placeholder: "Enter your password"
+          }]
+        },
+        signInForm: {
+          formFields: [{
+            id: "email",
+            label: "Email",
+            placeholder: "Enter your email"
+          }, {
+            id: "password",
+            label: "Password",
+            placeholder: "Enter your password"
+          }]
+        }
+      },
+      getRedirectionURL: async (context) => {
+        if (context.action === "SUCCESS") {
+          if (context.isNewUser) {
+            // New user signed up - redirect to dashboard
+            return "/dashboard"
+          } else {
+            // Existing user signed in - redirect to dashboard
+            return "/dashboard"
+          }
+        }
+        return undefined
+      }
+    }),
     Session.init()
   ],
 })

@@ -21,7 +21,7 @@ export default function Layout({ children }: LayoutProps) {
   })
 
   const navItems = [
-    { path: '/', label: 'Dashboard' },
+    { path: '/dashboard', label: 'Dashboard' },
     { path: '/orders', label: 'Orders' },
     { path: '/products', label: 'Products' },
     { path: '/sync', label: 'Sync' },
