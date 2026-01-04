@@ -23,8 +23,8 @@ class SyncLog(Base):
     __tablename__ = "sync_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    sync_type = Column(Enum(SyncType), nullable=False)
-    status = Column(Enum(SyncStatus), default=SyncStatus.PENDING)
+    sync_type = Column(Enum(SyncType, native_enum=False), nullable=False)
+    status = Column(Enum(SyncStatus, native_enum=False), default=SyncStatus.PENDING)
     source = Column(String, nullable=False)  # "etsy" or "tiktok_shop"
     
     # Related order (if applicable)

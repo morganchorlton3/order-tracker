@@ -24,8 +24,8 @@ class Order(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     external_id = Column(String, nullable=False, index=True)
-    source = Column(Enum(OrderSource), nullable=False)
-    status = Column(Enum(OrderStatus), default=OrderStatus.PENDING)
+    source = Column(Enum(OrderSource, native_enum=False), nullable=False)
+    status = Column(Enum(OrderStatus, native_enum=False), default=OrderStatus.PENDING)
     
     # Customer information
     customer_name = Column(String, nullable=False)

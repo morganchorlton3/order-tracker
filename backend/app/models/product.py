@@ -34,7 +34,7 @@ class Product(Base):
     variants = Column(JSON)  # Product variants (size, color, etc.)
     
     # Status
-    status = Column(Enum(ProductStatus), default=ProductStatus.DRAFT)
+    status = Column(Enum(ProductStatus, native_enum=False), default=ProductStatus.DRAFT)
     
     # External sync mappings
     etsy_listing_id = Column(String, nullable=True, index=True)
