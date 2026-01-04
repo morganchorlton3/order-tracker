@@ -47,19 +47,7 @@ export default function Settings() {
       ),
       color: 'bg-purple-600',
       darkColor: 'dark:bg-purple-500',
-    },
-    {
-      name: 'TikTok Shop',
-      description: 'Connect your TikTok Shop to sync orders and products',
-      source: 'tiktok_shop' as const,
-      icon: (
-        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-        </svg>
-      ),
-      color: 'bg-black',
-      darkColor: 'dark:bg-gray-700',
-    },
+    }
   ]
 
   return (
@@ -105,12 +93,11 @@ export default function Settings() {
                 <select
                   value={selectedSource}
                   onChange={(e) =>
-                    setSelectedSource(e.target.value as 'etsy' | 'tiktok_shop')
+                    setSelectedSource(e.target.value as 'etsy')
                   }
                   className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="etsy">Etsy</option>
-                  <option value="tiktok_shop">TikTok Shop</option>
                 </select>
               </div>
               <button
@@ -137,12 +124,11 @@ export default function Settings() {
                 <select
                   value={selectedSource}
                   onChange={(e) =>
-                    setSelectedSource(e.target.value as 'etsy' | 'tiktok_shop')
+                    setSelectedSource(e.target.value as 'etsy')
                   }
                   className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="etsy">Etsy</option>
-                  <option value="tiktok_shop">TikTok Shop</option>
                 </select>
               </div>
               <button

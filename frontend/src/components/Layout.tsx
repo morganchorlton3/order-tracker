@@ -42,7 +42,6 @@ export default function Layout({ children }: LayoutProps) {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/orders', label: 'Orders' },
-    { path: '/products', label: 'Products' },
   ]
 
   const handleLogout = async () => {
